@@ -10,12 +10,25 @@ namespace Assignment1
 {
     public class SimpleCSVParser
     {
+        /// <summary>
+        /// Total number of valid rows.
+        /// </summary>
         public int ValidRows { get; set; }
+        /// <summary>
+        /// Total number of invalid rows.
+        /// </summary>
         public int InvalidRows { get; set; }
+        /// <summary>
+        /// Header Fields of the CSV.
+        /// </summary>
         private string[] HeaderFields { get; set; }
-
+        /// <summary>
+        /// Logger.
+        /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public SimpleCSVParser()
         {
             // Load configuration
@@ -23,6 +36,11 @@ namespace Assignment1
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
         }
 
+        /// <summary>
+        /// Parse the CSV file and return valid rows. 
+        /// </summary>
+        /// <param name="fileName">CSV file name with full path</param>
+        /// <returns>List of valid rows</returns>
         public IList<List<String>> Parse(string fileName)
         {
             List<List<string>> final = new List<List<string>>();
@@ -41,6 +59,7 @@ namespace Assignment1
                         //Process row
                         List<string> fields = new List<string>(parser.ReadFields());
                         fields.Add(GetDateFromFileName(fileName));
+
                         string missingFieldname = string.Empty;
                         lineCount++;
                         if (!this.IsEmptyField(fields, out missingFieldname))
@@ -62,7 +81,11 @@ namespace Assignment1
                 throw;
             }
         }
-
+        /// <summary>
+        /// Get date from the filepath.
+        /// </summary>
+        /// <param name="fileName">CSV file name with full path</param>
+        /// <returns>Date time seralized as string.</returns>
         private string GetDateFromFileName(string fileName)
         {
             string[] sptFileName = fileName.Split(@"\");
@@ -72,7 +95,11 @@ namespace Assignment1
 
             return new DateTime(year, month, day).ToString();
         }
-
+        /// <summary>
+        /// Get header fields.
+        /// </summary>
+        /// <param name="fileName">CSV file name with full path</param>
+        /// <returns>List of header fields</returns>
         public List<string> GetHeaderFields(string fileName)
         {
             if (this.HeaderFields != null)
@@ -96,6 +123,13 @@ namespace Assignment1
                 throw;
             }
         }
+
+        /// <summary>
+        /// Checks if there is an empty field in the provided list. 
+        /// </summary>
+        /// <param name="fields">List of fields.</param>
+        /// <param name="fieldName">Out Param, shows which field is empty.</param>
+        /// <returns>True if there is an empty field else false.</returns>
         private bool IsEmptyField(List<string> fields, out string fieldName)
         {
             for (int i = 0; i < fields.Count; i++)

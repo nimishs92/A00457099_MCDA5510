@@ -6,7 +6,13 @@ namespace Assignment1
 {
     public class DirWalker
     {
-        public List<string> Walk1(string path)
+        /// <summary>
+        /// Recursivley browse all files in the directory.
+        /// </summary>
+        /// <param name="path">Path of the root Folder.</param>
+        /// <param name="format">Only select files matching the format.</param>
+        /// <returns>List of files found</returns>
+        public List<string> WalkRecursive(string path, string format)
         {
             List<string> lstFiles = new List<string>();
             string[] dirList = Directory.GetDirectories(path);
@@ -17,17 +23,23 @@ namespace Assignment1
             {
                 if (Directory.Exists(dir))
                 {
-                    lstFiles.AddRange(Walk1(dir));
+                    lstFiles.AddRange(WalkRecursive(dir,format));
                 }
             }
 
-            string[] fileList = Directory.GetFiles(path,"*.csv");
+            string[] fileList = Directory.GetFiles(path,format);
             lstFiles.AddRange(fileList);
 
             return lstFiles;
         }
 
-        public List<string> Walk(string root)
+        /// <summary>
+        /// Browse all files in the directory. Uses a stack. 
+        /// </summary>
+        /// <param name="root">Path of the root Folder.</param>
+        /// <param name="format">Only select files matching the format.</param>
+        /// <returns>List of files found</returns>
+        public List<string> WalkStack(string root, string format)
         {
             List<string> lstFiles = new List<string>();
             Stack<string> dirs = new Stack<string>(20);
@@ -41,7 +53,7 @@ namespace Assignment1
                 string[] files = null;
                 try
                 {
-                    files = System.IO.Directory.GetFiles(currentDir);
+                    files = System.IO.Directory.GetFiles(currentDir, format);
                 }
                 catch (Exception ex) { }
 

@@ -12,21 +12,26 @@ namespace Assignment1
 {
     class Program
     {
+        /// <summary>
+        /// Logger.
+        /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         static void Main(string[] args)
         {
-            // Load configuration
+            // Load log4net configuration.
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
             Stopwatch stopWatch = Stopwatch.StartNew();
 
             SimpleCSVParser CSVParser = new SimpleCSVParser();
-            List<string> lstFiles = new DirWalker().Walk1(@"C:\Users\nimis\Downloads\Sample Data\Sample Data");
+            List<string> lstFiles = new DirWalker().WalkRecursive(@"C:\Users\nimis\Downloads\Sample Data\Sample Data", "*.csv");
             List<List<string>> lstRecords = new List<List<string>>();
 
 
-            Console.WriteLine(lstFiles.Count);
+            Console.WriteLine("Total files count : " + lstFiles.Count);
+
+            // Parse CSV Files
 
             foreach (var file in lstFiles)
             {
@@ -34,28 +39,35 @@ namespace Assignment1
             }
                      
             Console.WriteLine("Valid Rows : " +  CSVParser.ValidRows);
+            log.Debug("Valid Rows: " +  CSVParser.ValidRows);
             Console.WriteLine("Invalid Rows : " + CSVParser.InvalidRows);
+            log.Debug("Invalid Rows : " + CSVParser.InvalidRows);
 
+            // Add date to the headers
             List<string> HeaderFields = CSVParser.GetHeaderFields(lstFiles[0]);
             HeaderFields.Add("Date");
 
-            using (StreamWriter file = new("WriteLines2.csv", append: true))
+            // Write to the output folder
+            using (StreamWriter file = new(@"..\..\..\Output\WriteLines2.csv", append: true))
             {
                 string csv = String.Join(",", HeaderFields.Select(x => x.ToString()));
-                ExampleAsync(csv, file);
+                WriteToFile(csv, file);
                 foreach (var record in lstRecords)
                 {
-                    //csv += String.Join(",", record.Select(x => x.ToString())) + "\n";
-                    ExampleAsync(String.Join(",", record), file);
+                    WriteToFile(String.Join(",", record), file);
                 }
-                //File.WriteAllText("Test.csv", csv);
             }
             stopWatch.Stop();
             Console.WriteLine("Elapsed time {0} ms", stopWatch.ElapsedMilliseconds);
             log.Debug(String.Format("Elapsed time {0} ms", stopWatch.ElapsedMilliseconds));
         }
 
-        public static void ExampleAsync(string data, StreamWriter file)
+        /// <summary>
+        /// Write data to file.
+        /// </summary>
+        /// <param name="data">Data to write </param>
+        /// <param name="file">Stream Writer represeting the file.</param>
+        public static void WriteToFile(string data, StreamWriter file)
         {
             file.WriteLine(data);
         }
