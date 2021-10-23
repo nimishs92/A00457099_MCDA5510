@@ -10,15 +10,14 @@ namespace Assignment1
         public int ValidRows { get; set; }
         public int InvalidRows { get; set; }
 
-        public IList<string[]> Parse(string fileName)
+        public IList<List<String>> Parse(string fileName)
         {
-            List<string[]> final = new List<string[]>();
+            List<List<string>> final = new List<List<string>>();
             try
             {
                 using (TextFieldParser parser = new TextFieldParser(fileName))
                 {
 
-                    // Console.WriteLine(fileName);
                     parser.TextFieldType = FieldType.Delimited;
                     parser.SetDelimiters(",");
                     // Ignore headers.
@@ -26,7 +25,8 @@ namespace Assignment1
                     while (!parser.EndOfData)
                     {
                         //Process row
-                        string[] fields = parser.ReadFields();
+                        List<string> fields = new List<string>(parser.ReadFields());
+                        fields.Add(GetDateFromFileName(fileName));
                         if (!this.IsEmptyField(fields))
                         {
                             final.Add(fields);
@@ -46,7 +46,17 @@ namespace Assignment1
             }
         }
 
-        public IList<string> GetHeaderFields(string fileName)
+        private string GetDateFromFileName(string fileName)
+        {
+            string[] sptFileName = fileName.Split(@"\");
+            int year = int.Parse(sptFileName[sptFileName.Length - 4]);
+            int month = int.Parse(sptFileName[sptFileName.Length - 3]);
+            int day = int.Parse(sptFileName[sptFileName.Length - 2]);
+
+            return new DateTime(year, month, day).ToString();
+        }
+
+        public List<string> GetHeaderFields(string fileName)
         {
             try
             {
@@ -55,7 +65,7 @@ namespace Assignment1
                     parser.TextFieldType = FieldType.Delimited;
                     parser.SetDelimiters(",");
                     // Ignore headers.
-                    if (!parser.EndOfData) return parser.ReadFields();
+                    if (!parser.EndOfData) return new List<string>(parser.ReadFields());
                     else throw new Exception("No Header Found");
                 }
                 
@@ -66,7 +76,7 @@ namespace Assignment1
                 throw;
             }
         }
-        private bool IsEmptyField(string[] fields)
+        private bool IsEmptyField(List<string> fields)
         {
             foreach (string field in fields)
             {

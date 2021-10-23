@@ -21,7 +21,7 @@ namespace Assignment1
                 }
             }
 
-            string[] fileList = Directory.GetFiles(path);
+            string[] fileList = Directory.GetFiles(path,"*.csv");
             lstFiles.AddRange(fileList);
 
             return lstFiles;
