@@ -11,14 +11,14 @@ namespace Assignment1
 {
     class Program
     {
-        // private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         static void Main(string[] args)
         {
             // Load configuration
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             var logger = new FileInfo("log4net.config");
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
-            ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            // ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             log.Debug("Hello World");
             log.Error("Hello World");
 
