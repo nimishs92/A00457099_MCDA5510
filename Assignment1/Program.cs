@@ -17,7 +17,6 @@ namespace Assignment1
         {
             // Load configuration
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-            var logger = new FileInfo("log4net.config");
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -43,11 +42,11 @@ namespace Assignment1
             using (StreamWriter file = new("WriteLines2.csv", append: true))
             {
                 string csv = String.Join(",", HeaderFields.Select(x => x.ToString()));
-                _ = ExampleAsync(csv, file);
+                ExampleAsync(csv, file);
                 foreach (var record in lstRecords)
                 {
                     //csv += String.Join(",", record.Select(x => x.ToString())) + "\n";
-                    _ = ExampleAsync(String.Join(",", record.Select(x => x.ToString())), file);
+                    ExampleAsync(String.Join(",", record), file);
                 }
                 //File.WriteAllText("Test.csv", csv);
             }
@@ -56,9 +55,9 @@ namespace Assignment1
             log.Debug(String.Format("Elapsed time {0} ms", stopWatch.ElapsedMilliseconds));
         }
 
-        public static async Task ExampleAsync(string data, StreamWriter file)
+        public static void ExampleAsync(string data, StreamWriter file)
         {
-            await file.WriteLineAsync(data);
+            file.WriteLine(data);
         }
     }
 }
