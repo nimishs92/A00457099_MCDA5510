@@ -28,9 +28,6 @@ namespace Assignment1
             List<string> lstFiles = new DirWalker().WalkRecursive(@"C:\Users\nimis\Downloads\Sample Data\Sample Data", "*.csv");
             List<List<string>> lstRecords = new List<List<string>>();
 
-
-            Console.WriteLine("Total files count : " + lstFiles.Count);
-
             // Parse CSV Files
 
             foreach (var file in lstFiles)
@@ -40,8 +37,8 @@ namespace Assignment1
                      
             Console.WriteLine("Valid Rows : " +  CSVParser.ValidRows);
             log.Debug("Valid Rows: " +  CSVParser.ValidRows);
-            Console.WriteLine("Invalid Rows : " + CSVParser.InvalidRows);
-            log.Debug("Invalid Rows : " + CSVParser.InvalidRows);
+            Console.WriteLine("Skipped Rows : " + CSVParser.InvalidRows);
+            log.Debug("Skipped Rows : " + CSVParser.InvalidRows);
 
             // Add date to the headers
             List<string> HeaderFields = CSVParser.GetHeaderFields(lstFiles[0]);
